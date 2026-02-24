@@ -1,50 +1,61 @@
-# MetraCAD v1.0.0
-### CAD LISP Plugin for Automated Length Quantification
+# MetraCAD v1.1.0
 
-MetraCAD is a high-performance LISP utility designed for AutoCAD and ZWCAD environments. It streamlines the process of measuring cumulative lengths across multiple entity types with automated reporting and data export capabilities.
+Utilidad AutoLISP para medir longitudes de entidades en AutoCAD, agrupadas por tipo y capa.
 
-## Technical Specifications
+**Autor:** Jean Carlos | **Licencia:** MIT | **Requiere:** AutoCAD 2010+ con Visual LISP (no compatible con LT)
 
-| Feature | Details |
-| :--- | :--- |
-| **Supported Entities** | Line, Polyline (2D/3D), Arc, Circle, Spline, Ellipse |
-| **Selection Logic** | Manual, Layer-based, or Color Index (ACI) |
-| **Precision** | Configurable decimal places (2, 3, or 4) |
-| **Environments** | AutoCAD 2010+, ZWCAD 2020+ |
-| **Dependencies** | Visual LISP (VLAX) Extension |
+## Instalación
 
-## Command Reference
+En AutoCAD ejecute `APPLOAD`, busque `metracad.lsp` y cárguelo. Para que se cargue automáticamente en cada sesión, agréguelo en la sección **Contenido de arranque** del mismo diálogo.
 
-| Command | Function |
-| :--- | :--- |
-| `METRACAD` | Initialize primary measurement routine and reporting. |
-| `METRACADEXPORT` | Export session data to TXT or CSV (Excel compatible). |
-| `METRACADHISTORY` | Display cumulative session measurement log. |
-| `METRACADHELP` | Access internal documentation and syntax. |
+## Comandos
 
-## Installation
+| Comando | Qué hace |
+| ------- | -------- |
+| `METRACAD` | Mide longitudes de forma interactiva |
+| `METRACADEXPORT` | Exporta el historial de la sesión a CSV |
+| `METRACADCLIP` | Copia el último reporte al portapapeles |
 
-### A. Volatile Load (Current Session)
-1. Execute `APPLOAD` in the command line.
-2. Select `metracad.lsp` and click **Load**.
+## Uso de METRACAD
 
-### B. Persistent Load (Startup Suite)
-1. Execute `APPLOAD`.
-2. Navigate to **Startup Suite** > **Contents**.
-3. Add `metracad.lsp` to the registry.
+Al ejecutarlo, el comando pregunta tres cosas:
 
-## Data Structure Example (Output)
+1. **Precisión** `[2/3/4]` — cantidad de decimales en el reporte
+2. **Unidad** `[m/cm/mm/ft]` — etiqueta que aparece en el resultado (no convierte valores, debe coincidir con las unidades del DWG)
+3. **Modo de selección:**
 
-MetraCAD generates a structured report within the command line and an optional system alert:
+| Modo | Comportamiento |
+| --- | --- |
+| `Selection` | Usted selecciona los objetos manualmente |
+| `Layer` | Selecciona todo lo de la misma capa que el objeto indicado |
+| `Color` | Selecciona todo lo del mismo color que el objeto indicado |
 
-* **Header**: Filename, timestamp, and active units.
-* **Type Breakdown**: Count and sum per entity class.
-* **Layer Breakdown**: Detailed analysis if objects span multiple layers.
+Al finalizar muestra un reporte por tipo de entidad y por capa, y ofrece copiarlo al portapapeles.
 
-## Development Roadmap
+> Las entidades dentro de bloques no se miden. Use `EXPLODE` primero.
 
-* **v1.x**: Multi-layer selection logic and Area (m²) computation.
-* **v2.0**: Migration to .NET API (C#) for multithreading and WPF UI.
+## Entidades soportadas
 
-## License
-MIT License. Copyright (c) 2026 Jean Carlos.
+`LINE` · `LWPOLYLINE` · `POLYLINE` · `ARC` · `CIRCLE` · `SPLINE` · `ELLIPSE`
+
+## Exportación CSV
+
+El archivo generado por `METRACADEXPORT` tiene dos secciones:
+
+- **Resumen por sesión** — una fila por cada vez que ejecutó `METRACAD`, con fecha, archivo, modo, filtro aplicado (ej. `Capa: TUBERIAS`), total de entidades, longitud total y unidad.
+- **Detalle por capa** — una fila por cada capa, con su cantidad de entidades y longitud acumulada.
+
+> El historial se borra al cerrar AutoCAD. Exporte antes de cerrar.
+
+## Historial de versiones
+
+### `0.0.1` Versión inicial
+
+### `1.0.1`
+
+- Corrección de variables locales.
+- Manejo de errores por entidad.
+- Reemplazo de `(exit)` por flag `abort`.
+- Timestamp único por sesión.
+- Comando `METRACADCLIP`, portapapeles al finalizar.
+- CSV con columna Filtro y detalle por capa.
