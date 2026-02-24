@@ -1,4 +1,4 @@
-# MetraCAD v1.1.0
+# MetraCAD
 
 Utilidad AutoLISP para medir longitudes de entidades en AutoCAD, agrupadas por tipo y capa.
 
@@ -51,7 +51,7 @@ El archivo generado por `METRACADEXPORT` tiene dos secciones:
 
 ### `0.0.1` Versión inicial
 
-### `1.0.1`
+### `0.0.2`
 
 - Corrección de variables locales.
 - Manejo de errores por entidad.
